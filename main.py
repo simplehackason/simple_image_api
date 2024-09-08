@@ -11,12 +11,16 @@ class Item(BaseModel):
 
 class Output(BaseModel):
     image: str
-    text: str
+    description: str
+    object_names: list[str]
+
+class Data(BaseModel):
+    data: Output
 
 app = FastAPI()
 
 
 @app.post("/")
-def input(item: Item) -> Output:
-    situation, base64_string = controller.run(item.image)
-    return Output(image=base64_string, text=situation)
+def input(item: Item) -> Data:
+    situation, base64_string, object_names = controller.run(item.image)
+    return Data(image=base64_string, description=situation, object_names=object_names)
