@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 
+from PIL import Image
+
 
 def detect_objects(image):
     # YOLOの設定ファイルと重みファイルをロード
@@ -52,9 +54,20 @@ def detect_objects(image):
 
     indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.5, 0.4)
     detected_classes = []
+
     for i in range(len(boxes)):
         if i in indexes:
+            x, y, w, h = boxes[i]
             label = str(classes[class_ids[i]])
+            confidence = confidences[i]
             detected_classes.append(label)
 
-    return detected_classes
+            color = (0, 255, 0)
+            cv2.rectangle(image_np, (x, y), (x + w, y + h), color, 2)
+            text = f"{label} {confidence:.2f}"
+            cv2.putText(
+                image_np, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2
+            )
+
+    pil_image = Image.fromarray(image_np)
+    return pil_image, detected_classes
