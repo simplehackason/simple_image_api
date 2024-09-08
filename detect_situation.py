@@ -1,7 +1,9 @@
+import os
+
 import openai
 
 # OpenAI APIキーを設定
-openai.api_key = ""
+openai.api_key = os.getenv("OPENAI_API_KEY", "")
 
 
 # OpenAI APIを使って状況を説明する関数
